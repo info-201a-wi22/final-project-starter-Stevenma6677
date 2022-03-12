@@ -8,12 +8,21 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+
+
+
 ```
+
+##Introduction
+
 Our project dealt with the issues faced by the individuals in countries where the COVID crisis affected the work hours and lives within those countries. Within our data set we had the information of 283 countries. There was a total of 11,942,709 hours lost worldwide in this data set per work week. This is a massive amount of labor and income that was lost. In this group, the countries that had dependents within the families most affected were the occupied Palestinian territories and the lower income threshold of Arab States. These areas, already faced with tremendous adversity, were put at greatest risk during the COVID crisis worldwide. Within countries least affected however, there were over 200 hours gained per week. 
 
-```{r, echo=FALSE}
-setwd("~/Info201Code/final-project-starter-Stevenma6677")
-employment_data <- read.csv("data/employment_data.csv")
+```{r summary, echo=FALSE}
+
+employment_data <- read.csv("D:/Info201Code/final-project-starter-Stevenma6677/data/employment_data.csv")
 summary_info <- list()
   summary_info$num_countries <- nrow(employment_data)
   summary_info$hours_lost <- ((employment_data$total_weekly_hours_worked.estimates_in_thousands./100)* employment_data$percentage_of_working_hrs_lost)
@@ -24,27 +33,36 @@ summary_info <- list()
     pull(country)
 ```
 
-```{r, echo=FALSE}
-data <- diff_worktime_change %>%
-  arrange(desc(country)) %>%
-  mutate(prop = percentage_of_working_hrs_lost / sum(diff_worktime_change$percentage_of_working_hrs_lost) *100)
-
-
-ggplot(data, aes(x="", y = prop, fill=country)) +
-  geom_bar(stat="identity", width=1, color="white") +
-  coord_polar("y", start=0) +
-  #remove background, grid, numeric labels
-  theme_void()
-```
-The chart we created was made up of only the top 19 in global economic status to show the comparison in loss of hours through a pie chart, with the differing sizes amounting the difference in loss of hours. In this chart, we can see that the main countries making up the loss in hours are Spain, the U.K., Italy, and other very wealthy nations. This combined with our knowledge from the summary info could tell us that the COVID effect within work has a high displacement at each end of the wealth spectrum worldwide.
-```{r, echo=false}
+##table 1
+```{r table_1, echo=FALSE}
 diff_worktime_change <- employment_data %>%
   group_by(country) %>%
   filter(country %in% c("Canada", "China", "Japan", "Germany", "Switzerland", "Australia", "United States",
                         "New Zealand", "United Kingdom", "Sweden", "Netherlands", "France", "Denmark", "Norway", 
                         "Singapore", "Italy", "China", "Finland", "Spain", "Belgium")) %>%
   select(country, percentage_of_working_hrs_lost)
-kable(diff_worktime_change)
+diff_worktime_change
 ```
 Within our table we can see a direct comparison on percentages of work hour losses. The nations which are primarily isolated do show that isolation from other countries may be a factor in hours lost, but that is untrue due to lower percentages being shared with many countries that directly border countries with high percentage of work hour loss. While geographic isolationism cannot be entirely ruled out as a factor, it seems that the amount of hours lost and effect on the population has a larger effect on richer and poorer countries, whereas countries neither exceedingly rich nor poor were able to maintain economic stability in terms of work.
+
+
+
+
+##Chart 1
+```{r chart_1, echo=FALSE}
+data <- diff_worktime_change %>%
+  arrange(desc(country)) %>%
+  mutate(prop = percentage_of_working_hrs_lost / sum(diff_worktime_change$percentage_of_working_hrs_lost) *100)
+
+
+chart <- ggplot(data, aes(x="", y = prop, fill=country)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  #remove background, grid, numeric labels
+  theme_void()
+chart
+```
+
+The chart we created was made up of only the top 19 in global economic status to show the comparison in loss of hours through a pie chart, with the differing sizes amounting the difference in loss of hours. In this chart, we can see that the main countries making up the loss in hours are Spain, the U.K., Italy, and other very wealthy nations. This combined with our knowledge from the summary info could tell us that the COVID effect within work has a high displacement at each end of the wealth spectrum worldwide.
+
 

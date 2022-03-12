@@ -1,8 +1,8 @@
-install.packages("dplyr")
-library("dplyr")
+
+library(dplyr)
 library(tidyverse)
 
-employment_data <- read.csv("~/Info201Code/final-project-starter-Stevenma6677/data/employment_data.csv")
+employment_data <- read.csv("D:/Info201Code/final-project-starter-Stevenma6677/data/employment_data.csv")
 summary_info <- list()
   summary_info$num_countries <- nrow(employment_data)
   summary_info$hours_lost <- ((employment_data$total_weekly_hours_worked.estimates_in_thousands./100)* employment_data$percentage_of_working_hrs_lost)
